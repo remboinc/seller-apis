@@ -384,7 +384,7 @@ def main():
         Запускает скрипт для обновления данных на платформе Ozon.
 
     """
-    
+
     env = Env()
     seller_token = env.str("SELLER_TOKEN")
     client_id = env.str("CLIENT_ID")
