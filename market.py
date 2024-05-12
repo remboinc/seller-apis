@@ -11,6 +11,23 @@ logger = logging.getLogger(__file__)
 
 
 def get_product_list(page, campaign_id, access_token):
+    """Получает список товаров из кампании на Яндекс.Маркет.
+
+    Аргументы:
+    page (str): Токен страницы для загрузки следующей порции товаров.
+    campaign_id (str): Идентификатор кампании на Яндекс.Маркет.
+    access_token (str): Токен доступа к API Яндекс.Маркет.
+
+    Возвращает:
+    dict: Словарь с результатами запроса.
+
+    Пример корректного исполнения:
+    >>> result = get_product_list("token123", "campaign123", "access_token123")
+
+    Пример некорректного исполнения:
+    >>> result = get_product_list("", "", "")
+    """
+
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
         "Content-Type": "application/json",
@@ -30,6 +47,23 @@ def get_product_list(page, campaign_id, access_token):
 
 
 def update_stocks(stocks, campaign_id, access_token):
+    """Обновляет остатки товаров в кампании на Яндекс.Маркет.
+
+    Аргументы:
+    stocks (list): Список с информацией об остатках товаров.
+    campaign_id (str): Идентификатор кампании на Яндекс.Маркет.
+    access_token (str): Токен доступа к API Яндекс.Маркет.
+
+    Возвращает:
+    dict: Словарь с результатами запроса.
+
+    Пример корректного исполнения:
+    >>> result = update_stocks([{"sku": "123", "warehouseId": "456", "items": [{"count": 10, "type": "FIT", "updatedAt": "2024-05-15T12:00:00Z"}]}], "campaign123", "access_token123")
+
+    Пример некорректного исполнения:
+    >>> result = update_stocks([], "", "")
+    """
+
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
         "Content-Type": "application/json",
@@ -46,6 +80,23 @@ def update_stocks(stocks, campaign_id, access_token):
 
 
 def update_price(prices, campaign_id, access_token):
+    """Обновляет цены товаров в кампании на Яндекс.Маркет.
+
+    Аргументы:
+    prices (list): Список с информацией о ценах товаров.
+    campaign_id (str): Идентификатор кампании на Яндекс.Маркет.
+    access_token (str): Токен доступа к API Яндекс.Маркет.
+
+    Возвращает:
+    dict: Словарь с результатами запроса.
+
+    Пример корректного исполнения:
+    >>> result = update_price([{"id": "123", "price": {"value": 1000, "currencyId": "RUR"}}], "campaign123", "access_token123")
+
+    Пример некорректного исполнения:
+    >>> result = update_price([], "", "")
+    """
+
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
         "Content-Type": "application/json",
@@ -62,7 +113,22 @@ def update_price(prices, campaign_id, access_token):
 
 
 def get_offer_ids(campaign_id, market_token):
-    """Получить артикулы товаров Яндекс маркета"""
+    """Получает артикулы товаров кампании на Яндекс.Маркет.
+
+    Аргументы:
+    campaign_id (str): Идентификатор кампании на Яндекс.Маркет.
+    market_token (str): Токен доступа к API Яндекс.Маркет.
+
+    Возвращает:
+    list: Список артикулов товаров.
+
+    Пример корректного исполнения:
+    >>> result = get_offer_ids("campaign123", "market_token123")
+
+    Пример некорректного исполнения:
+    >>> result = get_offer_ids("", "")
+    """
+
     page = ""
     product_list = []
     while True:
@@ -78,6 +144,23 @@ def get_offer_ids(campaign_id, market_token):
 
 
 def create_stocks(watch_remnants, offer_ids, warehouse_id):
+    """Создает информацию об остатках товаров для обновления на Яндекс.Маркет.
+
+    Аргументы:
+    watch_remnants (list): Список остатков товаров из внешнего источника.
+    offer_ids (list): Список артикулов товаров.
+    warehouse_id (str): Идентификатор склада на Яндекс.Маркет.
+
+    Возвращает:
+    list: Список информации об остатках товаров для обновления.
+
+    Пример корректного исполнения:
+    >>> result = create_stocks([{"Код": "123", "Количество": 10}], ["123"], "warehouse123")
+
+    Пример некорректного исполнения:
+    >>> result = create_stocks([], [], "")
+    """
+
     # Уберем то, что не загружено в market
     stocks = list()
     date = str(datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z")
@@ -123,6 +206,22 @@ def create_stocks(watch_remnants, offer_ids, warehouse_id):
 
 
 def create_prices(watch_remnants, offer_ids):
+    """Создает информацию о ценах товаров для обновления на Яндекс.Маркет.
+
+    Аргументы:
+    watch_remnants (list): Список остатков товаров из внешнего источника.
+    offer_ids (list): Список артикулов товаров.
+
+    Возвращает:
+    list: Список информации о ценах товаров для обновления.
+
+    Пример корректного исполнения:
+    >>> result = create_prices([{"Код": "123", "Цена": "1000"}], ["123"])
+
+    Пример некорректного исполнения:
+    >>> result = create_prices([], [])
+    """
+
     prices = []
     for watch in watch_remnants:
         if str(watch.get("Код")) in offer_ids:
@@ -143,6 +242,23 @@ def create_prices(watch_remnants, offer_ids):
 
 
 async def upload_prices(watch_remnants, campaign_id, market_token):
+    """Загружает цены товаров на Яндекс.Маркет.
+
+    Аргументы:
+    watch_remnants (list): Список остатков товаров из внешнего источника.
+    campaign_id (str): Идентификатор кампании на Яндекс.Маркет.
+    market_token (str): Токен доступа к API Яндекс.Маркет.
+
+    Возвращает:
+    list: Список загруженных цен товаров.
+
+    Пример корректного исполнения:
+    >>> result = upload_prices([{"Код": "123", "Цена": "1000"}], "campaign123", "market_token123")
+
+    Пример некорректного исполнения:
+    >>> result = upload_prices([], "", "")
+    """
+
     offer_ids = get_offer_ids(campaign_id, market_token)
     prices = create_prices(watch_remnants, offer_ids)
     for some_prices in list(divide(prices, 500)):
@@ -151,6 +267,24 @@ async def upload_prices(watch_remnants, campaign_id, market_token):
 
 
 async def upload_stocks(watch_remnants, campaign_id, market_token, warehouse_id):
+    """Загружает остатки товаров на Яндекс.Маркет.
+
+    Аргументы:
+    watch_remnants (list): Список остатков товаров из внешнего источника.
+    campaign_id (str): Идентификатор кампании на Яндекс.Маркет.
+    market_token (str): Токен доступа к API Яндекс.Маркет.
+    warehouse_id (str): Идентификатор склада на Яндекс.Маркет.
+
+    Возвращает:
+    tuple: Кортеж из двух списков - загруженных остатков и всех остатков.
+
+    Пример корректного исполнения:
+    >>> result = upload_stocks([{"Код": "123", "Количество": 10}], "campaign123", "market_token123", "warehouse123")
+
+    Пример некорректного исполнения:
+    >>> result = upload_stocks([], "", "", "")
+    """
+
     offer_ids = get_offer_ids(campaign_id, market_token)
     stocks = create_stocks(watch_remnants, offer_ids, warehouse_id)
     for some_stock in list(divide(stocks, 2000)):
@@ -162,6 +296,8 @@ async def upload_stocks(watch_remnants, campaign_id, market_token, warehouse_id)
 
 
 def main():
+    """ Главная функция для запуска скрипта """
+
     env = Env()
     market_token = env.str("MARKET_TOKEN")
     campaign_fbs_id = env.str("FBS_ID")
