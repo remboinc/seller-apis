@@ -22,7 +22,7 @@ def get_product_list(last_id, client_id, seller_token):
         seller_token (str): Токен продавца для аутентификации.
 
     Returns:
-        dict: Словарь, содержащий результат запроса к API магазина Ozon.
+        dict: Словарь с информацией о каждом товаре.
 
     Пример:
         >>> get_product_list("last_product_id", "client_id_value", "seller_token_value")

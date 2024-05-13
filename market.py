@@ -19,7 +19,7 @@ def get_product_list(page, campaign_id, access_token):
     access_token (str): Токен доступа к API Яндекс.Маркет.
 
     Возвращает:
-    dict: Словарь с результатами запроса.
+    dict: Словарь с информацией о каждом товаре.
 
     Пример корректного исполнения:
     >>> result = get_product_list("token123", "campaign123", "access_token123")
